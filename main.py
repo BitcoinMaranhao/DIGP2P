@@ -58,22 +58,22 @@ async def buy_usdt(valor_compra, porcentagem):
     
 async def var_valor(valor):
     if valor <= 9999.99:
-        taxa = 5.5
+        taxa = 6
     elif 10000 <= valor < 20000:
-        taxa = 4.5
+        taxa = 5
     elif valor >= 20000:
-        taxa = 3.5
+        taxa = 4
     
     # Chama a função responder_BTC e retorna seu resultado
     return await buy_btc(valor, taxa)
 
 async def var_valor_usdt(valor):
     if valor <= 9999.99:
-        taxa = 6.5
+        taxa = 6
     elif 10000 <= valor < 20000:
-        taxa = 5.5
+        taxa = 5
     elif valor >= 20000:
-        taxa = 4.5
+        taxa = 4
     
     # Chama a função responder_BTC e retorna seu resultado
     return await buy_usdt(valor, taxa)    
