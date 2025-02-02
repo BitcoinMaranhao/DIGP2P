@@ -40,7 +40,7 @@ async def calcular_usdt(value: ValueRequest):
           tags=["BTC"],
           summary="Valor satoshis",
           description="Retorna dados de sats com base em um falor fiat")
-async def calcular_btc(value: ValueRequest):
+async def calcular_sell_btc(value: ValueRequest):
     # Acessando o valor do JSON enviado
     resultado = await sell_btc(value.amountInCents)
     
@@ -53,7 +53,7 @@ async def calcular_btc(value: ValueRequest):
           tags=["USDT"],
           summary="Valor USDT",
           description="Retorna dados de usdt com base em um falor fiat")
-async def calcular_usdt(value: ValueRequest):
+async def calcular_sell_usdt(value: ValueRequest):
     # Acessando o valor do JSON enviado
     resultado = await sell_usdt(value.amountInCents)
     
