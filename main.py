@@ -1,79 +1,72 @@
 import httpx
 
-async def buy_btc(valor_compra, porcentagem):
-    par = "BTCBRL"
+depix_tax = 0.99
+async def buy_crypto(valor_compra, porcentagem, par):
     url = f"https://www.binance.com/api/v3/ticker/price?symbol={par}"
     
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
 
     if response.status_code == 200:
-        resposta = response.json()
-        cotacao = float(resposta["price"])
-        spread = 0
-        taxa_pix = 0.00
-        fee_pix = taxa_pix
-        valor_com_taxa = valor_compra - fee_pix
-        fee_service_brl = (valor_com_taxa * porcentagem) / 100
-        taxa_total = fee_service_brl + taxa_pix
-        total_comprado = valor_com_taxa - fee_service_brl
-        price_compra = cotacao + (cotacao * spread / 100)
-        quantidade = total_comprado / price_compra
-        quantidade_remake = round(quantidade, 8)  # Ajustando para 8 casas decimais
-
+        cotacao = float(response.json()["price"])
+        taxa_pix = depix_tax
+        fee_service_brl = (valor_compra * porcentagem) / 100
+        total_comprado = valor_compra - fee_service_brl - taxa_pix
+        quantidade = total_comprado / cotacao
         
-        # Retornando os valores calculados como um dicionário
-        return { "quantidade": quantidade_remake}
+        return {"quantidade": round(quantidade, 8)}  # Ajustando para 8 casas decimais
     else:
-
         return {"error": f"Erro ao acessar API Binance: {response.status_code}"}
     
-async def buy_usdt(valor_compra, porcentagem):
-    par = "USDTBRL"
+async def var_valor(valor, par):
+    if valor <= 9999.99:
+        taxa = 7
+    elif 10000 <= valor < 20000:
+        taxa = 6
+    else:
+        taxa = 5
+    
+    return await buy_crypto(valor, taxa, par)
+
+async def sell_crypto(valor_compra, porcentagem, par):
     url = f"https://www.binance.com/api/v3/ticker/price?symbol={par}"
     
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
 
     if response.status_code == 200:
-        resposta = response.json()
-        cotacao = float(resposta["price"])
-        spread = 0
-        taxa_pix = 0.00
-        fee_pix = taxa_pix
-        valor_com_taxa = valor_compra - fee_pix
-        fee_service_brl = (valor_com_taxa * porcentagem) / 100
-        taxa_total = fee_service_brl + taxa_pix
-        total_comprado = valor_com_taxa - fee_service_brl
-        price_compra = cotacao + (cotacao * spread / 100)
-        quantidade = total_comprado / price_compra
-        quantidade_remake = round(quantidade, 8)  # Ajustando para 8 casas decimais
-
+        cotacao = float(response.json()["price"])
+        taxa_pix = depix_tax
+        fee_service_brl = (valor_compra * porcentagem) / 100
+        total_comprado = valor_compra + fee_service_brl + taxa_pix
+        quantidade = total_comprado / cotacao
         
-        # Retornando os valores calculados como um dicionário
-        return { "quantidade": quantidade_remake}
+        return {"quantidade": round(quantidade, 8)}  # Ajustando para 8 casas decimais
     else:
+        return {"error": f"Erro ao acessar API Binance: {response.status_code}"}
 
-        return {"error": f"Erro ao acessar API Binance: {response.status_code}"}    
-    
-async def var_valor(valor):
-    if valor <= 9999.99:
-        taxa = 6
-    elif 10000 <= valor < 20000:
-        taxa = 5
-    elif valor >= 20000:
-        taxa = 4
-    
-    # Chama a função responder_BTC e retorna seu resultado
-    return await buy_btc(valor, taxa)
+ 
+async def var_sell_valor(valor, par):
+    taxa = 5    
+    return await sell_crypto(valor, taxa, par)
 
-async def var_valor_usdt(valor):
-    if valor <= 9999.99:
-        taxa = 6
-    elif 10000 <= valor < 20000:
-        taxa = 5
-    elif valor >= 20000:
-        taxa = 4
+async def buy_btc(valor):
+    var_valor(valor,'BTCBRL')
     
-    # Chama a função responder_BTC e retorna seu resultado
-    return await buy_usdt(valor, taxa)    
+async def buy_usdt(valor):
+    var_valor(valor,'USDTBRL')
+    
+async def sell_btc(valor):
+    var_sell_valor(valor,'BTCBRL')
+    
+async def sell_usdt(valor):
+    var_sell_valor(valor,'USDTBRL')
+# Exemplo de chamada:
+# await var_valor(5000, "BTCBRL")
+# await var_valor(15000, "USDTBRL")
+
+# import asyncio
+
+# if __name__ == "__main__":
+#     resultado = asyncio.run(var_sell_valor(100000, "BTCBRL"))
+#     print(resultado)
