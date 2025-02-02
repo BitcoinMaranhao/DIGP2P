@@ -35,10 +35,10 @@ async def trade_crypto(valor: float, par: str, is_buy: bool) -> dict:
 def get_trade_tax(valor: float) -> int:
     """Determina a taxa de negociação com base no valor."""
     if valor <= 9999.99:
-        return 7
-    elif 10000 <= valor < 20000:
         return 6
-    return 5
+    elif 10000 <= valor < 20000:
+        return 5
+    return 4
 
 # Funções específicas para compra e venda de BTC e USDT
 async def buy_btc(valor: float): return await trade_crypto(valor, 'BTCBRL', is_buy=True)
