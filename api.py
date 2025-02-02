@@ -9,7 +9,7 @@ app = FastAPI()
 class ValueRequest(BaseModel):
     amountInCents: float
 
-@app.get("/V1/API/calc_btc", 
+@app.post("/V1/API/calc_btc", 
           tags=["BTC"],
           summary="Valor satoshis",
           description="Retorna dados de sats com base em um falor fiat")
@@ -22,7 +22,7 @@ async def calcular_btc(value: ValueRequest):
     
     return {"error": "Erro ao calcular resposta BTC"}
 
-@app.get("/V1/API/calc_usdt", 
+@app.post("/V1/API/calc_usdt", 
           tags=["USDT"],
           summary="Valor USDT",
           description="Retorna dados de usdt com base em um falor fiat")
